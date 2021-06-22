@@ -10,7 +10,7 @@ public class Player extends FreeActor {
     private boolean hasRedKey = false;
 
     private int maximumHealth = 25;
-    private int criticalChange = 0;
+    private int criticalChance = 0;
 
     private boolean isHit = false;
 
@@ -37,7 +37,7 @@ public class Player extends FreeActor {
             this.damage = player.damage;
             this.inventory = player.inventory;
             this.selectedInventoryItemIndex = player.selectedInventoryItemIndex;
-            this.criticalChange = player.criticalChange;
+            this.criticalChance = player.criticalChance;
         }
     }
 
@@ -91,7 +91,7 @@ public class Player extends FreeActor {
     public int getCriticalChance()
     {
         EquippableItem usedItem = selectedInventoryItem();
-        return usedItem == null ? criticalChange : criticalChange + usedItem.getPlusCriticalChance();
+        return usedItem == null ? criticalChance : criticalChance + usedItem.getPlusCriticalChance();
     }
 
     public int getArmor()
@@ -204,5 +204,4 @@ public class Player extends FreeActor {
 
         isHit = true;
     }
-
 }
