@@ -5,6 +5,7 @@ import com.codecool.dungeoncrawl.logic.items.*;
 
 public class Player extends FreeActor {
     private Inventory inventory = new Inventory();
+
     private Integer selectedInventoryItemIndex = -1;
     private boolean hasBlueKey = false;
     private boolean hasRedKey = false;
@@ -169,24 +170,20 @@ public class Player extends FreeActor {
             maximumHealth += 5;
             health = Math.min(health+5, maximumHealth);
             this.getCell().setItem(null);
-            return;
         }
 
         if (itemOnTheGround instanceof Food){
             health = Math.min(health+10, maximumHealth);
             this.getCell().setItem(null);
-            return;
         }
 
         if (itemOnTheGround instanceof Toilet){
             health = Math.min(health+5, maximumHealth);
-            return;
         }
 
         if (itemOnTheGround instanceof Chest){
             getRandomBoon();
             this.getCell().setItem(null);
-            return;
         }
 
         if (itemOnTheGround instanceof Key){

@@ -36,7 +36,11 @@ public class GameDatabaseManager {
             monsterDao.add(enemy, saveId);
         }
         for (Item item: player.getInventory()){
-            inventoryDao.add(item, saveId);
+            if (item.isEquippable()){
+                inventoryDao.add(item, saveId);
+            }
+            pickedItemsDao.add(item, saveId);
+
         }
 
     }

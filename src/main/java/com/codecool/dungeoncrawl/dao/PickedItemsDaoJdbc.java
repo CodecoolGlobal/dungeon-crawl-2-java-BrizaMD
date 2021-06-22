@@ -22,8 +22,8 @@ public class PickedItemsDaoJdbc implements PickedItemsDao {
             PreparedStatement statement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
             statement.setInt(1, saveId);
-            statement.setInt(2, 5);
-            statement.setInt(3, 5);
+            statement.setInt(2, item.getCell().getX());
+            statement.setInt(3, item.getCell().getY());
 
             statement.executeUpdate();
             ResultSet resultSet = statement.getGeneratedKeys();
