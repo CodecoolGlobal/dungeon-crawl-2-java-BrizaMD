@@ -254,7 +254,9 @@ public class Main extends Application {
             long millis = System.currentTimeMillis();
             Timestamp currentTime = new Timestamp(millis);
 
-            saveState.saveGame(map.getPlayer(), new GameState("/"+map.getMapName()+".txt", currentTime, new PlayerModel(map.getPlayer())));
+            saveState.saveGame(map.getPlayer(),
+                    new GameState("/"+map.getMapName()+".txt", currentTime, new PlayerModel(map.getPlayer())),
+                    enemies);
 
         }
 
