@@ -29,6 +29,7 @@ public class PlayerModel extends BaseModel {
         this.hp = player.getHealth();
         this.armor = player.getArmor();
         this.maximumHealth = player.getMaximumHealth();
+        this.selectedInventoryItemIndex = player.getSelectedInventoryItemIndex();
     }
 
     public String getPlayerName() {

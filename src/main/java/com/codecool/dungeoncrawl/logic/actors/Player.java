@@ -104,6 +104,10 @@ public class Player extends FreeActor {
         return usedItem == null ? 0 : usedItem.getPlusArmor();
     }
 
+    public Integer getSelectedInventoryItemIndex(){
+        return this.selectedInventoryItemIndex;
+    }
+
     public boolean hasTorch()
     {
         EquippableItem userItem = selectedInventoryItem();
