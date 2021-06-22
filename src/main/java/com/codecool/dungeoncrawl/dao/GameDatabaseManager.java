@@ -35,7 +35,7 @@ public class GameDatabaseManager {
         for (FreeActor enemy: enemies) {
             monsterDao.add(enemy, saveId);
         }
-        for (Item item: player.getInventory()){
+        for (Item item: player.getFullInventory()){
             if (item.isEquippable()){
                 inventoryDao.add(item, saveId);
             }

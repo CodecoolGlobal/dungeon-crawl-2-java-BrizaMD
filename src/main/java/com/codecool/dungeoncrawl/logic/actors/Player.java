@@ -3,9 +3,11 @@ package com.codecool.dungeoncrawl.logic.actors;
 import com.codecool.dungeoncrawl.logic.*;
 import com.codecool.dungeoncrawl.logic.items.*;
 
+import java.util.stream.Collectors;
+
 public class Player extends FreeActor {
     private Inventory inventory = new Inventory();
-
+    private Inventory fullInventory = new Inventory();
     private Integer selectedInventoryItemIndex = -1;
     private boolean hasBlueKey = false;
     private boolean hasRedKey = false;
@@ -70,13 +72,18 @@ public class Player extends FreeActor {
         return inventory;
     }
 
+
+    public Inventory getFullInventory() {
+        return fullInventory;
+    }
+
     public boolean hasBlueKey() {
         return hasBlueKey;
     }
-
     public boolean hasRedKey() {
         return hasRedKey;
     }
+
     public EquippableItem selectedInventoryItem()
     {
         if (selectedInventoryItemIndex >= inventory.size() || selectedInventoryItemIndex < 0)
@@ -179,6 +186,7 @@ public class Player extends FreeActor {
 
         if (itemOnTheGround instanceof Toilet){
             health = Math.min(health+5, maximumHealth);
+            return;
         }
 
         if (itemOnTheGround instanceof Chest){
@@ -193,9 +201,10 @@ public class Player extends FreeActor {
                 hasRedKey = true;
             }
         }
-
-        inventory.add(itemOnTheGround);
-
+        if ((itemOnTheGround.isEquippable()) || (itemOnTheGround instanceof Key)) {
+            inventory.add(itemOnTheGround);
+        }
+        fullInventory.add(itemOnTheGround);
         this.getCell().setItem(null);
     }
 

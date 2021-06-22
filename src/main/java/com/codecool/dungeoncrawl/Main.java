@@ -17,6 +17,7 @@ import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -59,7 +60,6 @@ public class Main extends Application {
 
     final static String DAMAGE_PREFIX = "Damage: ";
     final static String ARMOR_PREFIX = "Armor: ";
-    final static String INVENTORY_PREFIX = "Inventory: \n";
 
     // TODO: sound pool class
     Music backgroundMusic;
@@ -145,15 +145,74 @@ public class Main extends Application {
 
         setSoundIsPlaying(backgroundMusic, true);
 
-
+        //TODO much more to be done here for the main menu
         Stage mainMenu = new Stage();
         HBox menuBox = new HBox();
         Button loadGame = new Button("Load Game");
-        loadGame.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                mainMenu.close();
-            }
+        loadGame.setPrefSize(200, 100);
+        loadGame.setOnAction(event -> {
+            mainMenu.close();
+            enemies = new ArrayList<>();
+            map = MapLoader.loadMap("map1");
+            canvas = new Canvas(VIEWPORT_WIDTH, VIEWPORT_HEIGHT);
+            context = canvas.getGraphicsContext2D();
+
+            GridPane ui = new GridPane();
+            ui.setPrefWidth(200);
+            ui.setPadding(new Insets(10));
+
+            BorderPane borderPane = new BorderPane();
+
+            borderPane.setCenter(canvas);
+
+            Scene scene = new Scene(borderPane);
+            primaryStage.setScene(scene);
+
+            scene.setOnKeyPressed(input::onKeyPressed);
+            scene.setOnKeyReleased(input::onKeyReleased);
+
+            scene.addEventHandler(MouseEvent.MOUSE_PRESSED, mouseEvent -> {
+                if (mouseEvent.getButton().toString().equals("PRIMARY")) {
+                    int mouseX = (int) mouseEvent.getX();
+                    int mouseY = (int) mouseEvent.getY();
+                    Inventory inventory = map.getPlayer().getInventory();
+                    int itemIndex = (mouseY-85)/(Tiles.TILE_WIDTH+2);
+                    if (mouseX > 24 && mouseX < 51) {
+                        if (mouseY > 85 && mouseY < 85 + inventory.size()*(Tiles.TILE_WIDTH+2)) {
+                            if (inventory.get(itemIndex).isEquippable()) {
+                                map.getPlayer().selectInventoryItem(itemIndex);
+                                if (inventory.get(itemIndex).getTileName().equals("sword")) setSoundIsPlaying(swordSound, true);
+                                else if (inventory.get(itemIndex).getTileName().contains("shield")) setSoundIsPlaying(shieldSound, true);
+                            }
+                        }
+                    }
+                }
+            });
+
+            primaryStage.setTitle("Dungeon Crawl");
+            primaryStage.show();
+
+            display = new Display(context, Main.this);
+
+            // Particle test
+            int rainColumns = 30;
+            float widthMultiplier = 1f / rainColumns;
+            for (int i=-rainColumns / 3; i<rainColumns * 3; i++)
+                screenParticles.add(new RainParticles(Util.randomRange(10, 16), Util.randomRange(4, 5), 0, Main.VIEWPORT_HEIGHT), Math.round(Main.VIEWPORT_WIDTH * (widthMultiplier * i)), 0);
+
+            torchParticle = new FireParticles(10, 3, 1.5f);
+
+            // Start framerate
+            KeyFrame keyFrame = new KeyFrame(Duration.millis(framerateInterval()), ae -> {
+                try {
+                    update();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            });
+            Timeline timeline = new Timeline(keyFrame);
+            timeline.setCycleCount(-1);
+            timeline.play();
         });
         menuBox.getChildren().add(loadGame);
         mainMenu.setTitle("Main Menu");
@@ -161,67 +220,7 @@ public class Main extends Application {
         mainMenu.show();
 
 
-        enemies = new ArrayList<>();
-        map = MapLoader.loadMap("map1");
-        canvas = new Canvas(VIEWPORT_WIDTH, VIEWPORT_HEIGHT);
-        context = canvas.getGraphicsContext2D();
 
-        GridPane ui = new GridPane();
-        ui.setPrefWidth(200);
-        ui.setPadding(new Insets(10));
-      
-        BorderPane borderPane = new BorderPane();
-
-        borderPane.setCenter(canvas);
-
-        Scene scene = new Scene(borderPane);
-        primaryStage.setScene(scene);
-
-        scene.setOnKeyPressed(input::onKeyPressed);
-        scene.setOnKeyReleased(input::onKeyReleased);
-
-        scene.addEventHandler(MouseEvent.MOUSE_PRESSED, mouseEvent -> {
-            if (mouseEvent.getButton().toString().equals("PRIMARY")) {
-                int mouseX = (int) mouseEvent.getX();
-                int mouseY = (int) mouseEvent.getY();
-                Inventory inventory = map.getPlayer().getInventory();
-                int itemIndex = (mouseY-85)/(Tiles.TILE_WIDTH+2);
-                if (mouseX > 24 && mouseX < 51) {
-                    if (mouseY > 85 && mouseY < 85 + inventory.size()*(Tiles.TILE_WIDTH+2)) {
-                        if (inventory.get(itemIndex).isEquippable()) {
-                            map.getPlayer().selectInventoryItem(itemIndex);
-                            if (inventory.get(itemIndex).getTileName().equals("sword")) setSoundIsPlaying(swordSound, true);
-                            else if (inventory.get(itemIndex).getTileName().contains("shield")) setSoundIsPlaying(shieldSound, true);
-                        }
-                    }
-                }
-            }
-        });
-
-        primaryStage.setTitle("Dungeon Crawl");
-        primaryStage.show();
-
-        display = new Display(context, this);
-
-        // Particle test
-        int rainColumns = 30;
-        float widthMultiplier = 1f / rainColumns;
-        for (int i=-rainColumns / 3; i<rainColumns * 3; i++)
-            screenParticles.add(new RainParticles(Util.randomRange(10, 16), Util.randomRange(4, 5), 0, Main.VIEWPORT_HEIGHT), Math.round(Main.VIEWPORT_WIDTH * (widthMultiplier * i)), 0);
-
-        torchParticle = new FireParticles(10, 3, 1.5f);
-
-        // Start framerate
-        KeyFrame keyFrame = new KeyFrame(Duration.millis(framerateInterval()), ae -> {
-            try {
-                update();
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
-            }
-        });
-        Timeline timeline = new Timeline(keyFrame);
-        timeline.setCycleCount(-1);
-        timeline.play();
     }
 
     private void getEnemies()
@@ -262,14 +261,13 @@ public class Main extends Application {
             setSoundIsPlaying(pickUpSound, true);
         }
 
+
         if (input.isSaveButton()){
             long millis = System.currentTimeMillis();
             Timestamp currentTime = new Timestamp(millis);
-
             saveState.saveGame(map.getPlayer(),
                     new GameState("/"+map.getMapName()+".txt", currentTime, new PlayerModel(map.getPlayer())),
                     enemies);
-
         }
 
         checkBloodParticles();
