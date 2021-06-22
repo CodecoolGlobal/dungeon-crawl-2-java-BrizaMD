@@ -14,6 +14,8 @@ import com.codecool.dungeoncrawl.model.PlayerModel;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -22,6 +24,7 @@ import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import javafx.scene.control.Button;
 import javafx.util.Duration;
@@ -31,6 +34,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.sql.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 
 public class Main extends Application {
@@ -53,8 +57,6 @@ public class Main extends Application {
     public final static int CANDLE_LIGHT_MIN = 0;
     public final static int CANDLE_LIGHT_MAX = 3;
 
-    final static String HEALTH_PREFIX = "Health: ";
-    final static String MAX_HEALTH_PREFIX = "/";
     final static String DAMAGE_PREFIX = "Damage: ";
     final static String ARMOR_PREFIX = "Armor: ";
     final static String INVENTORY_PREFIX = "Inventory: \n";
@@ -84,12 +86,7 @@ public class Main extends Application {
 
 
     // UI elements
-    Label inventory = new Label(INVENTORY_PREFIX);
-
     Label utilityLabel = new Label("");
-
-    Button pickUp = new Button("Pickup item");
-    ButtonGroup itemSelectors;
 
     // Game logic(?)
     PlayerInput input = new PlayerInput();
@@ -148,11 +145,26 @@ public class Main extends Application {
 
         setSoundIsPlaying(backgroundMusic, true);
 
+
+        Stage mainMenu = new Stage();
+        HBox menuBox = new HBox();
+        Button loadGame = new Button("Load Game");
+        loadGame.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                mainMenu.close();
+            }
+        });
+        menuBox.getChildren().add(loadGame);
+        mainMenu.setTitle("Main Menu");
+        mainMenu.setScene(new Scene(menuBox, 800, 800));
+        mainMenu.show();
+
+
         enemies = new ArrayList<>();
         map = MapLoader.loadMap("map1");
         canvas = new Canvas(VIEWPORT_WIDTH, VIEWPORT_HEIGHT);
         context = canvas.getGraphicsContext2D();
-
 
         GridPane ui = new GridPane();
         ui.setPrefWidth(200);
