@@ -10,6 +10,7 @@ public class GameMap {
     private Cell[][] cells;
     private int[] blueDoorLocation;
     private int[] redDoorLocation;
+    private String mapName;
 
     private ArrayList<Cell> lightCastingCells;
 
@@ -84,4 +85,11 @@ public class GameMap {
         this.redDoorLocation = redDoorLocation;
     }
 
+    public String getMapName() {
+        return mapName;
+    }
+
+    public void setMapName(String mapName) {
+        this.mapName = mapName;
+    }
 }

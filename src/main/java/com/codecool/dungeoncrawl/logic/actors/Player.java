@@ -8,7 +8,7 @@ public class Player extends FreeActor {
     private Integer selectedInventoryItemIndex = -1;
     private boolean hasBlueKey = false;
     private boolean hasRedKey = false;
-
+    private String playerName = "Uncle Bob";
     private int maximumHealth = 25;
     private int criticalChance = 0;
 
@@ -39,6 +39,10 @@ public class Player extends FreeActor {
             this.selectedInventoryItemIndex = player.selectedInventoryItemIndex;
             this.criticalChance = player.criticalChance;
         }
+    }
+
+    public String getPlayerName() {
+        return playerName;
     }
 
 

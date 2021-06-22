@@ -7,6 +7,7 @@ public class PlayerModel extends BaseModel {
     private int hp;
     private int x;
     private int y;
+    private int armor;
 
     private Integer selectedInventoryItemIndex = -1;
     private boolean hasBlueKey = false;
@@ -21,12 +22,13 @@ public class PlayerModel extends BaseModel {
     }
 
     public PlayerModel(Player player) {
-        this.playerName = "bob";    //TODO player.getName();
+        this.playerName = player.getPlayerName();
         this.x = player.getX();
         this.y = player.getY();
         this.hasBlueKey= player.hasBlueKey();
         this.hp = player.getHealth();
-
+        this.armor = player.getArmor();
+        this.maximumHealth = player.getMaximumHealth();
     }
 
     public String getPlayerName() {
@@ -71,5 +73,13 @@ public class PlayerModel extends BaseModel {
 
     public Integer getSelectedItem() {
         return selectedInventoryItemIndex;
+    }
+
+    public int getArmor() {
+        return armor;
+    }
+
+    public int getMaximumHealth() {
+        return maximumHealth;
     }
 }

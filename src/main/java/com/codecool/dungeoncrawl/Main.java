@@ -1,5 +1,6 @@
 package com.codecool.dungeoncrawl;
 
+import com.codecool.dungeoncrawl.dao.GameDatabaseManager;
 import com.codecool.dungeoncrawl.logic.*;
 import com.codecool.dungeoncrawl.logic.items.Inventory;
 import com.codecool.dungeoncrawl.logic.particles.BloodParticles;
@@ -8,6 +9,8 @@ import com.codecool.dungeoncrawl.logic.actors.FreeActor;
 import com.codecool.dungeoncrawl.logic.actors.Monster;
 import com.codecool.dungeoncrawl.logic.particles.ParticleSystemCollection;
 import com.codecool.dungeoncrawl.logic.particles.RainParticles;
+import com.codecool.dungeoncrawl.model.GameState;
+import com.codecool.dungeoncrawl.model.PlayerModel;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
@@ -23,7 +26,10 @@ import javafx.stage.Stage;
 import javafx.scene.control.Button;
 import javafx.util.Duration;
 
+import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.sql.Date;
 import java.util.List;
 
 
@@ -68,7 +74,7 @@ public class Main extends Application {
 
     public List<FreeActor> enemies;
 
-
+    GameDatabaseManager saveState = new GameDatabaseManager();
 
     // UI
     public GameMap map;
@@ -194,7 +200,13 @@ public class Main extends Application {
         torchParticle = new FireParticles(10, 3, 1.5f);
 
         // Start framerate
-        KeyFrame keyFrame = new KeyFrame(Duration.millis(framerateInterval()), ae -> update());
+        KeyFrame keyFrame = new KeyFrame(Duration.millis(framerateInterval()), ae -> {
+            try {
+                update();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+        });
         Timeline timeline = new Timeline(keyFrame);
         timeline.setCycleCount(-1);
         timeline.play();
@@ -216,7 +228,7 @@ public class Main extends Application {
         }
     }
 
-    private void update() {
+    private void update() throws SQLException {
         //TODO exit should not just close app without a word
         if (map.getPlayer().isDead()) {
             utilityLabel.setText("Your escape has come to a shorter, \n more cruel way than expected");
@@ -236,6 +248,14 @@ public class Main extends Application {
             useItem();
             map.getPlayer().pickupItem();
             setSoundIsPlaying(pickUpSound, true);
+        }
+
+        if (input.isSaveButton()){
+            long millis = System.currentTimeMillis();
+            Timestamp currentTime = new Timestamp(millis);
+
+            saveState.saveGame(map.getPlayer(), new GameState("/"+map.getMapName()+".txt", currentTime, new PlayerModel(map.getPlayer())));
+
         }
 
         checkBloodParticles();

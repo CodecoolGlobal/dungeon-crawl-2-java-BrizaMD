@@ -16,16 +16,19 @@ public class PlayerDaoJdbc implements PlayerDao {
     @Override
     public void add(PlayerModel player) {
         try (Connection conn = dataSource.getConnection()) {
-            String sql = "INSERT INTO player (save_id, hp, maximum_hp, armor, x, y, selected_item, has_red_key, has_blue_key, player_name) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            String sql = "INSERT INTO player (id, save_id, hp, maximum_hp, armor, x, y, selected_item, has_red_key, has_blue_key, player_name) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement statement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            statement.setInt(1, save_id);
-            statement.setInt(2, player.getHp());
-            statement.setInt(3, player.getX());
-            statement.setInt(4, player.getY());
-            statement.setInt(5, player.getSelectedItem());
-            statement.setBoolean(6, player.hasRedKey());
-            statement.setBoolean(7, player.hasBlueKey());
-            statement.setString(8, player.getPlayerName());
+            statement.setInt(1, 0);
+            statement.setInt(2, 1);
+            statement.setInt(3, player.getHp());
+            statement.setInt(4, player.getMaximumHealth());
+            statement.setInt(5, player.getArmor());
+            statement.setInt(6, player.getX());
+            statement.setInt(7, player.getY());
+            statement.setInt(8, player.getSelectedItem());
+            statement.setBoolean(9, player.hasRedKey());
+            statement.setBoolean(10, player.hasBlueKey());
+            statement.setString(11, player.getPlayerName());
             statement.executeUpdate();
             ResultSet resultSet = statement.getGeneratedKeys();
             resultSet.next();
