@@ -2,6 +2,7 @@ package com.codecool.dungeoncrawl.dao;
 
 import com.codecool.dungeoncrawl.logic.actors.FreeActor;
 import com.codecool.dungeoncrawl.logic.actors.Player;
+import com.codecool.dungeoncrawl.logic.items.Item;
 import com.codecool.dungeoncrawl.model.GameState;
 import com.codecool.dungeoncrawl.model.PlayerModel;
 import org.postgresql.ds.PGSimpleDataSource;
@@ -14,13 +15,16 @@ public class GameDatabaseManager {
     private PlayerDao playerDao;
     private GameStateDaoJdbc gameStateDao;
     private MonsterDaoJdbc monsterDao;
+    private InventoryDaoJdbc inventoryDao;
+    private PickedItemsDaoJdbc pickedItemsDao;
 
     public void setup() throws SQLException {
         DataSource dataSource = connect();
         playerDao = new PlayerDaoJdbc(dataSource);
         gameStateDao = new GameStateDaoJdbc(dataSource);
         monsterDao = new MonsterDaoJdbc(dataSource);
-
+        inventoryDao = new InventoryDaoJdbc(dataSource);
+        pickedItemsDao = new PickedItemsDaoJdbc(dataSource);
     }
 
     public void saveGame(Player player, GameState gameState, List<FreeActor> enemies) throws SQLException {
@@ -30,6 +34,9 @@ public class GameDatabaseManager {
         playerDao.add(model, saveId);
         for (FreeActor enemy: enemies) {
             monsterDao.add(enemy, saveId);
+        }
+        for (Item item: player.getInventory()){
+            inventoryDao.add(item, saveId);
         }
 
     }
