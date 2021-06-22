@@ -8,6 +8,12 @@ public class PlayerModel extends BaseModel {
     private int x;
     private int y;
 
+    private Integer selectedInventoryItemIndex = -1;
+    private boolean hasBlueKey = false;
+    private boolean hasRedKey = false;
+
+    private int maximumHealth = 25;
+
     public PlayerModel(String playerName, int x, int y) {
         this.playerName = playerName;
         this.x = x;
@@ -18,7 +24,7 @@ public class PlayerModel extends BaseModel {
         this.playerName = "bob";    //TODO player.getName();
         this.x = player.getX();
         this.y = player.getY();
-
+        this.hasBlueKey= player.hasBlueKey();
         this.hp = player.getHealth();
 
     }
@@ -53,5 +59,17 @@ public class PlayerModel extends BaseModel {
 
     public void setY(int y) {
         this.y = y;
+    }
+
+    public boolean hasBlueKey() {
+        return hasBlueKey;
+    }
+
+    public boolean hasRedKey() {
+        return hasRedKey;
+    }
+
+    public Integer getSelectedItem() {
+        return selectedInventoryItemIndex;
     }
 }
