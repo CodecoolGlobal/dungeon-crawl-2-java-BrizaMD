@@ -21,6 +21,7 @@ CREATE TABLE public.player (
    has_blue_key boolean NOT NULL
 );
 
+
 DROP TABLE IF EXISTS public.playerInventory;
 CREATE TABLE public.playerInventory (
     id serial NOT NULL PRIMARY KEY,
