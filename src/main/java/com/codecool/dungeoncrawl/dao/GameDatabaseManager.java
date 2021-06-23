@@ -5,6 +5,7 @@ import com.codecool.dungeoncrawl.logic.actors.Player;
 import com.codecool.dungeoncrawl.logic.items.Item;
 import com.codecool.dungeoncrawl.model.GameState;
 import com.codecool.dungeoncrawl.model.PlayerModel;
+import com.codecool.dungeoncrawl.model.SaveGame;
 import org.postgresql.ds.PGSimpleDataSource;
 
 import javax.sql.DataSource;
@@ -40,9 +41,12 @@ public class GameDatabaseManager {
                 inventoryDao.add(item, saveId);
             }
             pickedItemsDao.add(item, saveId);
-
         }
+    }
 
+    public List<SaveGame> loadGame() throws SQLException {
+        setup();
+        return gameStateDao.getAll();
     }
 
     private DataSource connect() throws SQLException {
@@ -61,4 +65,6 @@ public class GameDatabaseManager {
 
         return dataSource;
     }
+
+
 }

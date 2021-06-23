@@ -11,6 +11,7 @@ import com.codecool.dungeoncrawl.logic.particles.ParticleSystemCollection;
 import com.codecool.dungeoncrawl.logic.particles.RainParticles;
 import com.codecool.dungeoncrawl.model.GameState;
 import com.codecool.dungeoncrawl.model.PlayerModel;
+import com.codecool.dungeoncrawl.model.SaveGame;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
@@ -144,7 +145,6 @@ public class Main extends Application {
 
         setSoundIsPlaying(backgroundMusic, true);
 
-        //TODO much more to be done here for the main menu
         Stage mainMenu = new Stage();
         AnchorPane menuBox = new AnchorPane();
         Button newGame = new Button("New Game");
@@ -159,12 +159,7 @@ public class Main extends Application {
         exitGame.setPrefSize(200, 100);
         exitGame.setLayoutX(540);
         exitGame.setLayoutY(440);
-        /** New Game should take us to a textbox where we can put in the player's name
-         * There should be a Load Game, which gives us a list of available savegames to load
-         * A query should get these saves of course and on clicking an OK button
-         * The map should be loaded and then we should use the tables we have created to get rid of items that the player already got
-         * How to do the same with monsters? If we load up everything and we have monsters in the DB with changed positions...?
-         * */
+
         newGame.setOnAction(event -> {
             mainMenu.close();
             enemies = new ArrayList<>();
@@ -228,6 +223,21 @@ public class Main extends Application {
             Timeline timeline = new Timeline(keyFrame);
             timeline.setCycleCount(-1);
             timeline.play();
+        });
+        loadGame.setOnAction(event->{
+            GameDatabaseManager loadGameDB = new GameDatabaseManager();
+            try {
+                List<SaveGame> allSaves = loadGameDB.loadGame();
+
+                // TODO load all saves on stage, make them selectable, load chosen one after pressing OK
+
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+
+        });
+        exitGame.setOnAction(event->{
+            System.exit(0);
         });
         menuBox.getChildren().add(newGame);
         menuBox.getChildren().add(loadGame);

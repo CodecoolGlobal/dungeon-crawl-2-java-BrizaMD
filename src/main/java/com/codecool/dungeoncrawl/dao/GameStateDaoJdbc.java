@@ -2,6 +2,7 @@ package com.codecool.dungeoncrawl.dao;
 
 import com.codecool.dungeoncrawl.model.GameState;
 import com.codecool.dungeoncrawl.model.PlayerModel;
+import com.codecool.dungeoncrawl.model.SaveGame;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -41,12 +42,29 @@ public class GameStateDaoJdbc implements GameStateDao {
     }
 
     @Override
-    public GameState get(int id) {
-        return null;
+    public GameState get(SaveGame save) {
+        return save.loadData(dataSource);
     }
 
     @Override
-    public List<GameState> getAll() {
-        return null;
+    public List<SaveGame> getAll() {
+        try (Connection conn = dataSource.getConnection()) {
+            String sql = "SELECT * FROM saves";
+            PreparedStatement statement = conn.prepareStatement(sql);
+            ResultSet results = statement.executeQuery();
+            List<SaveGame> returnSaves = new ArrayList<>();
+            while (results.next()){
+                int saveId = results.getInt("id");
+                String currentMap = results.getString("current_map");
+                Timestamp savedAt = results.getTimestamp("saved_at");
+                String saveName = results.getString("name");
+                returnSaves.add(new SaveGame(saveId, currentMap, savedAt, saveName));
+            }
+            return returnSaves;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
+
 }
