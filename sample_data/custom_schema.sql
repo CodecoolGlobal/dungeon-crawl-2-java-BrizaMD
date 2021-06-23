@@ -9,6 +9,7 @@ CREATE TABLE public.saves (
 DROP TABLE IF EXISTS public.player;
 CREATE TABLE public.player (
    id serial NOT NULL PRIMARY KEY,
+   player_name varchar(255) NOT NULL,
    save_id integer NOT NULL,
    hp integer NOT NULL,
    maximum_hp integer NOT NULL,
