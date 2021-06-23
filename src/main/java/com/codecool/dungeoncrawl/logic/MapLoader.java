@@ -268,7 +268,12 @@ public class MapLoader {
                             break;
                         case 's':
                             cell.setType(CellType.FLOOR);
-                            new Skeleton(cell);
+                            for (MonsterModel enemy : savedEnemies) {
+                                if (enemy.getX() == x && enemy.getY() == y) {
+                                    new Skeleton(cell);
+                                    break;
+                                }
+                            }
                             break;
                         case '@':
                             cell.setType(CellType.FLOOR);
@@ -323,7 +328,12 @@ public class MapLoader {
                             break;
                         case 'i':
                             cell.setType(CellType.FLOOR);
-                            new Golem(cell);
+                            for (MonsterModel enemy : savedEnemies) {
+                                if (enemy.getX() == x && enemy.getY() == y) {
+                                    new Golem(cell);
+                                    break;
+                                }
+                            }
                             break;
                         case 'o':
                             cell.setType(CellType.REDWALL1);
@@ -333,22 +343,42 @@ public class MapLoader {
                             break;
                         case 'd':
                             cell.setType(CellType.FLOOR);
-                            new Wizard(cell);
+                            for (MonsterModel enemy : savedEnemies) {
+                                if (enemy.getX() == x && enemy.getY() == y) {
+                                    new Wizard(cell);
+                                    break;
+                                }
+                            }
                             break;
                         case 'f':
                             cell.setType(CellType.FLOOR);
-                            new Spider(cell);
+                            for (MonsterModel enemy : savedEnemies) {
+                                if (enemy.getX() == x && enemy.getY() == y) {
+                                    new Spider(cell);
+                                    break;
+                                }
+                            }
                             break;
                         case 'g':
                             cell.setType(CellType.EXIT);
                             break;
                         case 'h':
                             cell.setType(CellType.FLOOR);
-                            new Ghost(cell);
+                            for (MonsterModel enemy : savedEnemies) {
+                                if (enemy.getX() == x && enemy.getY() == y) {
+                                    new Ghost(cell);
+                                    break;
+                                }
+                            }
                             break;
                         case 'j':
                             cell.setType(CellType.FLOOR);
-                            new Kraken(cell);
+                            for (MonsterModel enemy : savedEnemies) {
+                                if (enemy.getX() == x && enemy.getY() == y) {
+                                    new Kraken(cell);
+                                    break;
+                                }
+                            }
                             break;
                         case 'k':
                             cell.setType(CellType.FLOOR);
@@ -394,7 +424,7 @@ public class MapLoader {
                                 cell.setType(CellType.REDDOOR);
                                 map.setRedDoorLocation(new int[]{x, y});
                                 break;
-                            } else cell.setType(CellType.OPENBLUEDOOR); break;
+                            } else cell.setType(CellType.FLOOR); break;
                         case 'R':
                             cell.setType(CellType.FLOOR);
                             for (InventoryItemModel item : inventory) {
@@ -461,19 +491,39 @@ public class MapLoader {
                             break;
                         case '(':
                             cell.setType(CellType.GRASS1);
-                            new Insect(cell);
+                            for (MonsterModel enemy : savedEnemies) {
+                                if (enemy.getX() == x && enemy.getY() == y) {
+                                    new Insect(cell);
+                                    break;
+                                }
+                            }
                             break;
                         case ')':
                             cell.setType(CellType.FLOOR);
-                            new Snake(cell);
+                            for (MonsterModel enemy : savedEnemies) {
+                                if (enemy.getX() == x && enemy.getY() == y) {
+                                    new Snake(cell);
+                                    break;
+                                }
+                            }
                             break;
                         case 'K':
                             cell.setType(CellType.FLOOR);
-                            new Croc(cell);
+                            for (MonsterModel enemy : savedEnemies) {
+                                if (enemy.getX() == x && enemy.getY() == y) {
+                                    new Croc(cell);
+                                    break;
+                                }
+                            }
                             break;
                         case 'J':
                             cell.setType(CellType.FLOOR);
-                            new Bat(cell);
+                            for (MonsterModel enemy : savedEnemies) {
+                                if (enemy.getX() == x && enemy.getY() == y) {
+                                    new Bat(cell);
+                                    break;
+                                }
+                            }
                             break;
                         case 'H':
                             cell.setType(CellType.CITYPOST);

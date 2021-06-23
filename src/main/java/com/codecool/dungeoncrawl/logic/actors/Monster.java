@@ -16,9 +16,21 @@ public abstract class Monster extends FreeActor{
     int maxDiff;
     float maxSpeed;
     float minSpeed;
+    final int startingX;
+    final int startingY;
 
     public Monster(Cell cell) {
         super(cell);
+        startingX = cell.getX();
+        startingY = cell.getY();
+    }
+
+    public int getStartingX() {
+        return startingX;
+    }
+
+    public int getStartingY() {
+        return startingY;
     }
 
     public void enemyMove() {

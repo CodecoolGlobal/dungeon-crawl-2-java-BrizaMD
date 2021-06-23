@@ -17,15 +17,15 @@ public class MonsterDaoJdbc implements MonsterDao {
     }
 
     @Override
-    public void add(FreeActor enemy, int saveId) {
+    public void add(Monster enemy, int saveId) {
         try (Connection conn = dataSource.getConnection()) {
             String sql = "INSERT INTO enemies (id, save_id, x, y, tile_name) " +
                     "VALUES (DEFAULT, ?, ?, ?, ?)";
             PreparedStatement statement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
             statement.setInt(1, saveId);
-            statement.setInt(2, enemy.getX());
-            statement.setInt(3, enemy.getY());
+            statement.setInt(2, enemy.getStartingX());
+            statement.setInt(3, enemy.getStartingY());
             statement.setString(4, enemy.getTileName());    //TODO this is not exactly what we want
 
             statement.executeUpdate();

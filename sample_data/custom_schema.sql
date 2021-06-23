@@ -1,11 +1,3 @@
-DROP TABLE IF EXISTS public.saves;
-CREATE TABLE public.saves (
-   id serial NOT NULL PRIMARY KEY,
-   current_map varchar(255) NOT NULL,
-   saved_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-   name varchar(255) NOT NULL
-);
-
 DROP TABLE IF EXISTS public.player;
 CREATE TABLE public.player (
    id serial NOT NULL PRIMARY KEY,
@@ -39,6 +31,14 @@ CREATE TABLE public.enemies (
     tile_name varchar(255) NOT NULL
 );
 
+DROP TABLE IF EXISTS public.saves;
+CREATE TABLE public.saves (
+                              id serial NOT NULL PRIMARY KEY,
+                              current_map varchar(255) NOT NULL,
+                              saved_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                              name varchar(255) NOT NULL
+);
+
 ALTER TABLE ONLY public.player
     ADD CONSTRAINT fk_save_id FOREIGN KEY (save_id) REFERENCES public.saves(id);
 
@@ -47,3 +47,4 @@ ALTER TABLE ONLY public.playerInventory
 
 ALTER TABLE ONLY public.enemies
     ADD CONSTRAINT fk_save_id FOREIGN KEY (save_id) REFERENCES public.saves(id);
+

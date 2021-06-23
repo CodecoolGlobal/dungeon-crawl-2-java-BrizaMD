@@ -1,6 +1,7 @@
 package com.codecool.dungeoncrawl.dao;
 
 import com.codecool.dungeoncrawl.logic.actors.FreeActor;
+import com.codecool.dungeoncrawl.logic.actors.Monster;
 import com.codecool.dungeoncrawl.logic.actors.Player;
 import com.codecool.dungeoncrawl.logic.items.Item;
 import com.codecool.dungeoncrawl.model.GameState;
@@ -28,12 +29,12 @@ public class GameDatabaseManager {
         inventoryDao = new InventoryDaoJdbc(dataSource);
     }
 
-    public void saveGame(Player player, GameState gameState, List<FreeActor> enemies) throws SQLException {
+    public void saveGame(Player player, GameState gameState, List<Monster> enemies) throws SQLException {
         setup();
         PlayerModel model = new PlayerModel(player);
         int saveId = gameStateDao.add(gameState);
         playerDao.add(model, saveId);
-        for (FreeActor enemy: enemies) {
+        for (Monster enemy: enemies) {
             monsterDao.add(enemy, saveId);
         }
         for (Item item: player.getAllItems()){

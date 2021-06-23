@@ -67,7 +67,7 @@ public class Main extends Application {
     final static int MOVE_SPEED = 3;
     //Enemy setup
 
-    public List<FreeActor> enemies;
+    public List<Monster> enemies;
 
     GameDatabaseManager saveState = new GameDatabaseManager();
 
@@ -354,7 +354,7 @@ public class Main extends Application {
             for (Cell cell: row){
                 if (cell.getActor() != null){
                     if (cell.getActor() instanceof Monster){
-                        enemies.add((FreeActor) cell.getActor());
+                        enemies.add((Monster) cell.getActor());
                     }
                 }
             }

@@ -8,7 +8,7 @@ import com.codecool.dungeoncrawl.model.PlayerModel;
 import java.util.List;
 
 public interface MonsterDao {
-    void add(FreeActor enemy, int saveId);
+    void add(Monster enemy, int saveId);
     void update();
     List<MonsterModel> get(int saveId);
 }
