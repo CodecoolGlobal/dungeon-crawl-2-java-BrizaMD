@@ -31,6 +31,11 @@ public class Player extends FreeActor {
     private boolean hasBlueKey = false;
     private boolean hasRedKey = false;
     private String playerName = "Uncle Bob";
+
+    public void setMaximumHealth(int maximumHealth) {
+        this.maximumHealth = maximumHealth;
+    }
+
     private int maximumHealth = 25;
     private int criticalChance = 0;
 

@@ -516,6 +516,8 @@ public class MapLoader {
             map.getPlayer().pickupItemByName(item.getTileName());
         }
         map.getPlayer().selectInventoryItem(loadedPlayer.getSelectedItem());
+        map.getPlayer().setMaximumHealth(loadedPlayer.getMaximumHealth());
+        map.getPlayer().setHealth(loadedPlayer.getHp());
         map.updateLightCastingCells();
         return map;
     }
