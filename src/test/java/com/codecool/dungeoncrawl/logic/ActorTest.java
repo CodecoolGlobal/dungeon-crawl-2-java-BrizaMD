@@ -26,7 +26,7 @@ class ActorTest {
     @Test
     void cannotMoveIntoWall() {
         /*ameMap.getCell(2, 1).setType(CellType.WALL);
-        Player player = new Player(gameMap.getCell(1, 1));
+        Player player = new Player(gameMap.getCell(1, 1)); //TODO can't do this and anything related to player because we changed the way move players work
         player.move(1, 0);
 
         assertEquals(1, player.getX());

@@ -6,6 +6,7 @@ import com.codecool.dungeoncrawl.model.InventoryItemModel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.function.ToLongBiFunction;
 import java.util.stream.Collectors;
 
@@ -222,6 +223,17 @@ public class Player extends FreeActor {
             allItems.add(itemOnTheGround);
 
         this.getCell().setItem(null);
+    }
+
+    public void pickupItemByName(String itemName) {
+        switch (itemName.toLowerCase()) {
+            case "sword": new Sword(getCell()); pickupItem(); break;
+            case "shield": new Shield(getCell()); pickupItem(); break;
+            case "chest": new Chest(getCell()); pickupItem(); break;
+            case "torch": new Torch(getCell()); pickupItem(); break;
+            case "bluekey": new Key(getCell(), "blue"); pickupItem(); break;
+            case "redkey": new Key(getCell(), "red"); pickupItem(); break;
+        }
     }
 
     @Override

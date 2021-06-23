@@ -512,6 +512,10 @@ public class MapLoader {
             }
         }
         map.setPlayer(new Player(map.getCell(loadedPlayer.getX(), loadedPlayer.getY())));
+        for (InventoryItemModel item: inventory) {
+            map.getPlayer().pickupItemByName(item.getTileName());
+        }
+        map.getPlayer().selectInventoryItem(loadedPlayer.getSelectedItem());
         map.updateLightCastingCells();
         return map;
     }
