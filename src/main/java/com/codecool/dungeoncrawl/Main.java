@@ -34,6 +34,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.sql.Date;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -146,15 +147,20 @@ public class Main extends Application {
         setSoundIsPlaying(backgroundMusic, true);
 
         Stage mainMenu = new Stage();
+
         AnchorPane menuBox = new AnchorPane();
+        GridPane loadBox = new GridPane();
+
         Button newGame = new Button("New Game");
         newGame.setPrefSize(200, 100);
         newGame.setLayoutX(540);
         newGame.setLayoutY(200);
+
         Button loadGame = new Button("Load Game");
         loadGame.setPrefSize(200, 100);
         loadGame.setLayoutX(540);
         loadGame.setLayoutY(320);
+
         Button exitGame = new Button("Exit Game");
         exitGame.setPrefSize(200, 100);
         exitGame.setLayoutX(540);
@@ -230,6 +236,19 @@ public class Main extends Application {
                 List<SaveGame> allSaves = loadGameDB.loadGame();
 
                 // TODO load all saves on stage, make them selectable, load chosen one after pressing OK
+                ButtonGroup loadButtons = new ButtonGroup(loadBox, 10, 10, 200, 100);
+                for (SaveGame save : allSaves)
+                    loadButtons.AddButton(save.saveId, save.saveName);
+
+                for (SavegameButton button : loadButtons.buttons) {
+                    button.setOnAction(event2 -> {
+                        int saveID = button.ID;
+                        System.out.println("load game: " + ((Integer) saveID).toString());
+                        // TODO: actual loading
+                    });
+                }
+
+                mainMenu.setScene(new Scene(loadBox));
 
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
@@ -239,6 +258,7 @@ public class Main extends Application {
         exitGame.setOnAction(event->{
             System.exit(0);
         });
+
         menuBox.getChildren().add(newGame);
         menuBox.getChildren().add(loadGame);
         menuBox.getChildren().add(exitGame);

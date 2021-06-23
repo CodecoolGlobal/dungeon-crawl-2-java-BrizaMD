@@ -6,10 +6,10 @@ import javax.sql.DataSource;
 import java.sql.Timestamp;
 
 public class SaveGame {
-    int saveId;
+    public int saveId;
     String currentMap;
     Timestamp savedAt;
-    String saveName;
+    public String saveName;
 
     public SaveGame(int saveId, String currentMap, Timestamp savedAt, String saveName) {
         this.saveId = saveId;
