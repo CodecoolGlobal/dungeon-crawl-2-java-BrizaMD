@@ -148,9 +148,15 @@ public class Main extends Application {
         //TODO much more to be done here for the main menu
         Stage mainMenu = new Stage();
         HBox menuBox = new HBox();
-        Button loadGame = new Button("Load Game");
-        loadGame.setPrefSize(200, 100);
-        loadGame.setOnAction(event -> {
+        Button newGame = new Button("New Game");
+        newGame.setPrefSize(200, 100);
+        /** New Game should take us to a textbox where we can put in the player's name
+         * There should be a Load Game, which gives us a list of available savegames to load
+         * A query should get these saves of course and on clicking an OK button
+         * The map should be loaded and then we should use the tables we have created to get rid of items that the player already got
+         * How to do the same with monsters? If we load up everything and we have monsters in the DB with changed positions...?
+         * */
+        newGame.setOnAction(event -> {
             mainMenu.close();
             enemies = new ArrayList<>();
             map = MapLoader.loadMap("map1");
@@ -214,7 +220,7 @@ public class Main extends Application {
             timeline.setCycleCount(-1);
             timeline.play();
         });
-        menuBox.getChildren().add(loadGame);
+        menuBox.getChildren().add(newGame);
         mainMenu.setTitle("Main Menu");
         mainMenu.setScene(new Scene(menuBox, 800, 800));
         mainMenu.show();
