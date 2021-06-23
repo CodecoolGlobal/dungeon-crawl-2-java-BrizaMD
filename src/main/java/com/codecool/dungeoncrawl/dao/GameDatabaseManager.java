@@ -4,6 +4,7 @@ import com.codecool.dungeoncrawl.logic.actors.FreeActor;
 import com.codecool.dungeoncrawl.logic.actors.Player;
 import com.codecool.dungeoncrawl.logic.items.Item;
 import com.codecool.dungeoncrawl.model.GameState;
+import com.codecool.dungeoncrawl.model.MonsterModel;
 import com.codecool.dungeoncrawl.model.PlayerModel;
 import com.codecool.dungeoncrawl.model.SaveGame;
 import org.postgresql.ds.PGSimpleDataSource;
@@ -47,6 +48,14 @@ public class GameDatabaseManager {
 
     public PlayerModel loadPlayer(int saveId) throws SQLException{
         return playerDao.get(saveId);
+    }
+
+    public List<MonsterModel> loadEnemies(int saveId) throws SQLException{
+        return monsterDao.get(saveId);
+    }
+
+    public String loadMapName(int saveId) throws SQLException{
+        return gameStateDao.getMapName(saveId);
     }
 
     private DataSource connect() throws SQLException {

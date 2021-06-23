@@ -67,4 +67,20 @@ public class GameStateDaoJdbc implements GameStateDao {
         }
     }
 
+    @Override
+    public String getMapName(int saveId) {
+        try (Connection conn = dataSource.getConnection()) {
+            String sql = "SELECT current_map FROM saves WHERE id=?";
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setInt(1, saveId);
+            ResultSet results = statement.executeQuery();
+            results.next();
+            return results.getString("current_map");
+
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }

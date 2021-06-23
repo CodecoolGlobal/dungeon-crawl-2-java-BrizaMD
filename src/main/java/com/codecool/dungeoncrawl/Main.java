@@ -2,31 +2,22 @@ package com.codecool.dungeoncrawl;
 
 import com.codecool.dungeoncrawl.dao.GameDatabaseManager;
 import com.codecool.dungeoncrawl.logic.*;
-import com.codecool.dungeoncrawl.logic.actors.Player;
 import com.codecool.dungeoncrawl.logic.items.Inventory;
-import com.codecool.dungeoncrawl.logic.items.Item;
 import com.codecool.dungeoncrawl.logic.particles.BloodParticles;
 import com.codecool.dungeoncrawl.logic.particles.FireParticles;
 import com.codecool.dungeoncrawl.logic.actors.FreeActor;
 import com.codecool.dungeoncrawl.logic.actors.Monster;
 import com.codecool.dungeoncrawl.logic.particles.ParticleSystemCollection;
 import com.codecool.dungeoncrawl.logic.particles.RainParticles;
-import com.codecool.dungeoncrawl.model.GameState;
-import com.codecool.dungeoncrawl.model.InventoryItemModel;
-import com.codecool.dungeoncrawl.model.PlayerModel;
-import com.codecool.dungeoncrawl.model.SaveGame;
+import com.codecool.dungeoncrawl.model.*;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
@@ -34,12 +25,10 @@ import javafx.scene.control.Button;
 import javafx.util.Duration;
 
 import java.sql.SQLException;
+import java.sql.SQLOutput;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.sql.Date;
-import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 
 public class Main extends Application {
@@ -252,18 +241,10 @@ public class Main extends Application {
                         // TODO: actual loading
                         try {
                             PlayerModel loadedPlayer = loadGameDB.loadPlayer(saveID);
-
-                            // TODO: enemies (nem)
-
-                            System.out.println(loadedPlayer.getPlayerName());
-                            System.out.println(loadedPlayer.getX());
-                            System.out.println(loadedPlayer.getY());
-                            System.out.println(loadedPlayer.getHp());
-                            System.out.println(loadedPlayer.getMaximumHealth());
-
-                            for (InventoryItemModel item : loadedPlayer.getInventory())
-                                System.out.println(item.getTileName());
-
+                            String mapName = loadGameDB.loadMapName(saveID);
+                            List<MonsterModel> loadedEnemies = loadGameDB.loadEnemies(saveID);
+                            mainMenu.close();
+                            loadGame(loadedPlayer, loadedEnemies, primaryStage, mapName);
                         } catch (SQLException throwables) {
                             throwables.printStackTrace();
                         }
@@ -296,6 +277,72 @@ public class Main extends Application {
 
 
 
+    }
+
+    private void loadGame(PlayerModel loadedPlayer, List<MonsterModel> savedEnemies, Stage primaryStage, String mapName) {
+        map = MapLoader.loadMap(mapName.substring(1, mapName.length()-4), loadedPlayer, savedEnemies);
+        enemies = new ArrayList<>();//TODO this should get filled out once we load our saved enemies and refresh
+        canvas = new Canvas(VIEWPORT_WIDTH, VIEWPORT_HEIGHT);
+        context = canvas.getGraphicsContext2D();
+
+        GridPane ui = new GridPane();
+        ui.setPrefWidth(200);
+        ui.setPadding(new Insets(10));
+
+        BorderPane borderPane = new BorderPane();
+
+        borderPane.setCenter(canvas);
+
+        Scene scene = new Scene(borderPane);
+        primaryStage.setScene(scene);
+
+        scene.setOnKeyPressed(input::onKeyPressed);
+        scene.setOnKeyReleased(input::onKeyReleased);
+
+        scene.addEventHandler(MouseEvent.MOUSE_PRESSED, mouseEvent -> {
+            if (mouseEvent.getButton().toString().equals("PRIMARY")) {
+                int mouseX = (int) mouseEvent.getX();
+                int mouseY = (int) mouseEvent.getY();
+                Inventory inventory = map.getPlayer().getInventory();
+
+                int itemIndex = (mouseY-85)/(Tiles.TILE_WIDTH+2);
+
+                if (mouseX > 24 && mouseX < 51) {
+                    if (mouseY > 85 && mouseY < 85 + inventory.size()*(Tiles.TILE_WIDTH+2)) {
+                        if (inventory.get(itemIndex).isEquippable()) {
+                            map.getPlayer().selectInventoryItem(itemIndex);
+                            if (inventory.get(itemIndex).getTileName().equals("sword")) setSoundIsPlaying(swordSound, true);
+                            else if (inventory.get(itemIndex).getTileName().contains("shield")) setSoundIsPlaying(shieldSound, true);
+                        }
+                    }
+                }
+            }
+        });
+
+        primaryStage.setTitle("Dungeon Crawl");
+        primaryStage.show();
+
+        display = new Display(context, Main.this);
+
+        // Particle test
+        int rainColumns = 30;
+        float widthMultiplier = 1f / rainColumns;
+        for (int i=-rainColumns / 3; i<rainColumns * 3; i++)
+            screenParticles.add(new RainParticles(Util.randomRange(10, 16), Util.randomRange(4, 5), 0, Main.VIEWPORT_HEIGHT), Math.round(Main.VIEWPORT_WIDTH * (widthMultiplier * i)), 0);
+
+        torchParticle = new FireParticles(10, 3, 1.5f);
+
+        // Start framerate
+        KeyFrame keyFrame = new KeyFrame(Duration.millis(framerateInterval()), ae -> {
+            try {
+                update();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+        });
+        Timeline timeline = new Timeline(keyFrame);
+        timeline.setCycleCount(-1);
+        timeline.play();
     }
 
     private void getEnemies()

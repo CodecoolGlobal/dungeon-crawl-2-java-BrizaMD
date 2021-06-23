@@ -10,4 +10,5 @@ public interface GameStateDao {
     void update(GameState state);
     GameState get(SaveGame save);
     List<SaveGame> getAll();
+    String getMapName(int saveId);
 }
