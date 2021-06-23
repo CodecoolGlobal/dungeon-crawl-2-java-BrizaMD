@@ -2,12 +2,39 @@ package com.codecool.dungeoncrawl.logic.actors;
 
 import com.codecool.dungeoncrawl.logic.*;
 import com.codecool.dungeoncrawl.logic.items.*;
+import com.codecool.dungeoncrawl.model.InventoryItemModel;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.function.ToLongBiFunction;
+import java.util.stream.Collectors;
 
 public class Player extends FreeActor {
     private Inventory inventory = new Inventory();
+
+    public Inventory getAllItems() {
+        return allItems;
+    }
+    public List<InventoryItemModel> getAllItemModels()
+    {
+        List<InventoryItemModel> results = new ArrayList<>();
+        for (Item item : allItems)
+            results.add(new InventoryItemModel(item.getTileName(), item.getCell().getX(), item.getCell().getY()));
+
+        return results;
+    }
+
+    private Inventory allItems = new Inventory();
+
     private Integer selectedInventoryItemIndex = -1;
     private boolean hasBlueKey = false;
     private boolean hasRedKey = false;
+    private String playerName = "Uncle Bob";
+
+    public void setMaximumHealth(int maximumHealth) {
+        this.maximumHealth = maximumHealth;
+    }
 
     private int maximumHealth = 25;
     private int criticalChance = 0;
@@ -41,6 +68,10 @@ public class Player extends FreeActor {
         }
     }
 
+    public String getPlayerName() {
+        return playerName;
+    }
+
 
     public int getMaximumHealth() {
         return maximumHealth;
@@ -65,13 +96,14 @@ public class Player extends FreeActor {
         return inventory;
     }
 
+
     public boolean hasBlueKey() {
         return hasBlueKey;
     }
-
     public boolean hasRedKey() {
         return hasRedKey;
     }
+
     public EquippableItem selectedInventoryItem()
     {
         if (selectedInventoryItemIndex >= inventory.size() || selectedInventoryItemIndex < 0)
@@ -98,6 +130,10 @@ public class Player extends FreeActor {
     {
         EquippableItem usedItem = selectedInventoryItem();
         return usedItem == null ? 0 : usedItem.getPlusArmor();
+    }
+
+    public Integer getSelectedInventoryItemIndex(){
+        return this.selectedInventoryItemIndex;
     }
 
     public boolean hasTorch()
@@ -161,13 +197,11 @@ public class Player extends FreeActor {
             maximumHealth += 5;
             health = Math.min(health+5, maximumHealth);
             this.getCell().setItem(null);
-            return;
         }
 
         if (itemOnTheGround instanceof Food){
             health = Math.min(health+10, maximumHealth);
             this.getCell().setItem(null);
-            return;
         }
 
         if (itemOnTheGround instanceof Toilet){
@@ -178,7 +212,6 @@ public class Player extends FreeActor {
         if (itemOnTheGround instanceof Chest){
             getRandomBoon();
             this.getCell().setItem(null);
-            return;
         }
 
         if (itemOnTheGround instanceof Key){
@@ -188,10 +221,24 @@ public class Player extends FreeActor {
                 hasRedKey = true;
             }
         }
+        if (itemOnTheGround.isEquippable() || itemOnTheGround instanceof Key)
+            inventory.add(itemOnTheGround);
 
-        inventory.add(itemOnTheGround);
+        if (!(itemOnTheGround instanceof Toilet))
+            allItems.add(itemOnTheGround);
 
         this.getCell().setItem(null);
+    }
+
+    public void pickupItemByName(String itemName) {
+        switch (itemName.toLowerCase()) {
+            case "sword": new Sword(getCell()); pickupItem(); break;
+            case "shield": new Shield(getCell()); pickupItem(); break;
+            case "chest": new Chest(getCell()); pickupItem(); break;
+            case "torch": new Torch(getCell()); pickupItem(); break;
+            case "bluekey": new Key(getCell(), "blue"); pickupItem(); break;
+            case "redkey": new Key(getCell(), "red"); pickupItem(); break;
+        }
     }
 
     @Override

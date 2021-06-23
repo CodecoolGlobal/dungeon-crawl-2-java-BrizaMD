@@ -9,6 +9,8 @@ public class PlayerInput {
     private boolean buttonUp = false;
     private boolean buttonDown = false;
     private boolean useButton = false;
+    private boolean controlButton = false;
+    private boolean saveButton = false;
 
     public boolean isTestButton() {
         return testButton;
@@ -42,6 +44,8 @@ public class PlayerInput {
             case DOWN:
             case S:
                 buttonDown = true;
+                saveButton = controlButton;
+                if (saveButton) System.out.println("suavé buoitton");
                 break;
             case LEFT:
             case A:
@@ -57,6 +61,9 @@ public class PlayerInput {
             case INSERT:
                 testButton = true;
                 break;
+            case CONTROL:
+                controlButton = true;
+                break;
         }
         updateAxes();
     }
@@ -68,7 +75,9 @@ public class PlayerInput {
                 buttonUp = false; break;
             case DOWN:
             case S:
-                buttonDown = false; break;
+                buttonDown = false;
+                saveButton = false;
+                break;
             case LEFT:
             case A:
                 buttonLeft = false; break;
@@ -80,6 +89,10 @@ public class PlayerInput {
                 break;
             case INSERT:
                 testButton = false;
+                break;
+            case CONTROL:
+                controlButton = false;
+                saveButton = false;
                 break;
         }
         updateAxes();
@@ -102,5 +115,10 @@ public class PlayerInput {
 
     public boolean isUseButton() {
         return useButton;
+    }
+
+
+    public boolean isSaveButton() {
+        return saveButton;
     }
 }

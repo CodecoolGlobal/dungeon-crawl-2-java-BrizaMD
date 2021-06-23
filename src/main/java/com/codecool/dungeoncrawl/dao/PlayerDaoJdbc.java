@@ -1,6 +1,11 @@
 package com.codecool.dungeoncrawl.dao;
 
+import com.codecool.dungeoncrawl.logic.Cell;
+import com.codecool.dungeoncrawl.logic.actors.Player;
+import com.codecool.dungeoncrawl.logic.items.Inventory;
+import com.codecool.dungeoncrawl.model.InventoryItemModel;
 import com.codecool.dungeoncrawl.model.PlayerModel;
+import com.codecool.dungeoncrawl.model.SaveGame;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -14,14 +19,21 @@ public class PlayerDaoJdbc implements PlayerDao {
     }
 
     @Override
-    public void add(PlayerModel player) {
+    public void add(PlayerModel player, int saveId) {
         try (Connection conn = dataSource.getConnection()) {
-            String sql = "INSERT INTO player (player_name, hp, x, y) VALUES (?, ?, ?, ?)";
+            String sql = "INSERT INTO player (id, save_id, hp, maximum_hp, armor, x, y, selected_item, has_red_key, has_blue_key) " +
+                    "VALUES (DEFAULT, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement statement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            statement.setString(1, player.getPlayerName());
+
+            statement.setInt(1, saveId);
             statement.setInt(2, player.getHp());
-            statement.setInt(3, player.getX());
-            statement.setInt(4, player.getY());
+            statement.setInt(3, player.getMaximumHealth());
+            statement.setInt(4, player.getArmor());
+            statement.setInt(5, player.getX());
+            statement.setInt(6, player.getY());
+            statement.setInt(7, player.getSelectedItem());
+            statement.setBoolean(8, player.hasRedKey());
+            statement.setBoolean(9, player.hasBlueKey());
             statement.executeUpdate();
             ResultSet resultSet = statement.getGeneratedKeys();
             resultSet.next();
@@ -37,8 +49,38 @@ public class PlayerDaoJdbc implements PlayerDao {
     }
 
     @Override
-    public PlayerModel get(int id) {
-        return null;
+    public PlayerModel get(int saveId) {
+        try (Connection conn = dataSource.getConnection()) {
+            String sql = "SELECT * FROM player WHERE save_id=?";
+            PreparedStatement statement = conn.prepareStatement(sql);
+
+            statement.setInt(1, saveId);
+
+            ResultSet resultSet = statement.executeQuery();
+
+            while(resultSet.next()) {
+                int hp = resultSet.getInt("hp");
+                int maxHp = resultSet.getInt("maximum_hp");
+                int armor = resultSet.getInt("armor");
+                int x = resultSet.getInt("x");
+                int y = resultSet.getInt("y");
+                int selectedItem = resultSet.getInt("selected_item");
+                boolean hasRedKey = resultSet.getBoolean("has_red_key");
+                boolean hasBlueKey = resultSet.getBoolean("has_blue_key");
+                String playerName = resultSet.getString("player_name");
+
+                List<InventoryItemModel> inventory = new InventoryDaoJdbc(dataSource).getItems(saveId);
+
+                PlayerModel loadedPlayer = new PlayerModel(playerName, x, y, hp, maxHp, armor, hasBlueKey, hasRedKey, selectedItem, inventory);
+
+                return loadedPlayer;
+            }
+
+            return null;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
