@@ -49,6 +49,10 @@ public class GameDatabaseManager {
         return gameStateDao.getAll();
     }
 
+    public PlayerModel loadPlayer(int saveId) throws SQLException{
+        return playerDao.get(saveId);
+    }
+
     private DataSource connect() throws SQLException {
         PGSimpleDataSource dataSource = new PGSimpleDataSource();
         String dbName = "dungeons";

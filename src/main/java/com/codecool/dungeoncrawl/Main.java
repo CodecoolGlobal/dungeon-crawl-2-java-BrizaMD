@@ -2,6 +2,7 @@ package com.codecool.dungeoncrawl;
 
 import com.codecool.dungeoncrawl.dao.GameDatabaseManager;
 import com.codecool.dungeoncrawl.logic.*;
+import com.codecool.dungeoncrawl.logic.actors.Player;
 import com.codecool.dungeoncrawl.logic.items.Inventory;
 import com.codecool.dungeoncrawl.logic.particles.BloodParticles;
 import com.codecool.dungeoncrawl.logic.particles.FireParticles;
@@ -245,10 +246,16 @@ public class Main extends Application {
                         int saveID = button.ID;
                         System.out.println("load game: " + ((Integer) saveID).toString());
                         // TODO: actual loading
+                        try {
+                            PlayerModel loadedPlayer = loadGameDB.loadPlayer(saveID);
+                        } catch (SQLException throwables) {
+                            throwables.printStackTrace();
+                        }
                     });
                 }
-
-                mainMenu.setScene(new Scene(loadBox));
+                Scene loadScreen = new Scene(loadBox, 1280, 720);
+                loadScreen.getStylesheets().add("style.css");
+                mainMenu.setScene(loadScreen);
 
             } catch (SQLException throwables) {
                 throwables.printStackTrace();

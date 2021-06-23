@@ -1,6 +1,9 @@
 package com.codecool.dungeoncrawl.dao;
 
+import com.codecool.dungeoncrawl.logic.Cell;
+import com.codecool.dungeoncrawl.logic.actors.Player;
 import com.codecool.dungeoncrawl.model.PlayerModel;
+import com.codecool.dungeoncrawl.model.SaveGame;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -45,8 +48,34 @@ public class PlayerDaoJdbc implements PlayerDao {
     }
 
     @Override
-    public PlayerModel get(int id) {
-        return null;
+    public PlayerModel get(int saveId) {
+        try (Connection conn = dataSource.getConnection()) {
+            String sql = "SELECT * FROM player WHERE save_id=?";
+            PreparedStatement statement = conn.prepareStatement(sql);
+
+            statement.setInt(1, saveId);
+
+            ResultSet resultSet = statement.executeQuery();
+            resultSet.next();
+            //TODO how to return? Player needs a Cell, Cell needs a lot more info? Leave null deal with later?
+//            PlayerModel loadedPlayer = new Player(null);
+//
+//            int hp = resultSet.getInt("hp");
+//            int maxHp = resultSet.getInt("maximum_hp");
+//            int armor = resultSet.getInt("armor");
+//            int x = resultSet.getInt("x");
+//            int y = resultSet.getInt("y");
+//            int selectedItem = resultSet.getInt("selected_item");
+//            boolean hasRedKey = resultSet.getBoolean("has_red_key");
+//            boolean hasBlueKey = resultSet.getBoolean("has_blue_key");
+//
+//
+//            return loadedPlayer;
+            return null;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
