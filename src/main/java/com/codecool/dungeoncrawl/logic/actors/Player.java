@@ -2,12 +2,30 @@ package com.codecool.dungeoncrawl.logic.actors;
 
 import com.codecool.dungeoncrawl.logic.*;
 import com.codecool.dungeoncrawl.logic.items.*;
+import com.codecool.dungeoncrawl.model.InventoryItemModel;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.ToLongBiFunction;
 import java.util.stream.Collectors;
 
 public class Player extends FreeActor {
     private Inventory inventory = new Inventory();
-    private Inventory fullInventory = new Inventory();
+
+    public Inventory getAllItems() {
+        return allItems;
+    }
+    public List<InventoryItemModel> getAllItemModels()
+    {
+        List<InventoryItemModel> results = new ArrayList<>();
+        for (Item item : allItems)
+            results.add(new InventoryItemModel(item.getTileName(), item.getCell().getX(), item.getCell().getY()));
+
+        return results;
+    }
+
+    private Inventory allItems = new Inventory();
+
     private Integer selectedInventoryItemIndex = -1;
     private boolean hasBlueKey = false;
     private boolean hasRedKey = false;
@@ -72,10 +90,6 @@ public class Player extends FreeActor {
         return inventory;
     }
 
-
-    public Inventory getFullInventory() {
-        return fullInventory;
-    }
 
     public boolean hasBlueKey() {
         return hasBlueKey;
@@ -201,10 +215,12 @@ public class Player extends FreeActor {
                 hasRedKey = true;
             }
         }
-        if ((itemOnTheGround.isEquippable()) || (itemOnTheGround instanceof Key)) {
+        if (itemOnTheGround.isEquippable() || itemOnTheGround instanceof Key)
             inventory.add(itemOnTheGround);
-        }
-        fullInventory.add(itemOnTheGround);
+
+        if (!(itemOnTheGround instanceof Toilet))
+            allItems.add(itemOnTheGround);
+
         this.getCell().setItem(null);
     }
 

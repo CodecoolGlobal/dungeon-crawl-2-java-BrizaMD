@@ -4,6 +4,7 @@ import com.codecool.dungeoncrawl.dao.GameDatabaseManager;
 import com.codecool.dungeoncrawl.logic.*;
 import com.codecool.dungeoncrawl.logic.actors.Player;
 import com.codecool.dungeoncrawl.logic.items.Inventory;
+import com.codecool.dungeoncrawl.logic.items.Item;
 import com.codecool.dungeoncrawl.logic.particles.BloodParticles;
 import com.codecool.dungeoncrawl.logic.particles.FireParticles;
 import com.codecool.dungeoncrawl.logic.actors.FreeActor;
@@ -11,6 +12,7 @@ import com.codecool.dungeoncrawl.logic.actors.Monster;
 import com.codecool.dungeoncrawl.logic.particles.ParticleSystemCollection;
 import com.codecool.dungeoncrawl.logic.particles.RainParticles;
 import com.codecool.dungeoncrawl.model.GameState;
+import com.codecool.dungeoncrawl.model.InventoryItemModel;
 import com.codecool.dungeoncrawl.model.PlayerModel;
 import com.codecool.dungeoncrawl.model.SaveGame;
 import javafx.animation.KeyFrame;
@@ -193,7 +195,9 @@ public class Main extends Application {
                     int mouseX = (int) mouseEvent.getX();
                     int mouseY = (int) mouseEvent.getY();
                     Inventory inventory = map.getPlayer().getInventory();
+
                     int itemIndex = (mouseY-85)/(Tiles.TILE_WIDTH+2);
+
                     if (mouseX > 24 && mouseX < 51) {
                         if (mouseY > 85 && mouseY < 85 + inventory.size()*(Tiles.TILE_WIDTH+2)) {
                             if (inventory.get(itemIndex).isEquippable()) {
@@ -239,7 +243,7 @@ public class Main extends Application {
                 // TODO load all saves on stage, make them selectable, load chosen one after pressing OK
                 ButtonGroup loadButtons = new ButtonGroup(loadBox, 10, 10, 200, 100);
                 for (SaveGame save : allSaves)
-                    loadButtons.AddButton(save.saveId, save.saveName);
+                    loadButtons.AddButton(save.saveId, String.format("%s [dátum]", save.saveId, save.saveName));
 
                 for (SavegameButton button : loadButtons.buttons) {
                     button.setOnAction(event2 -> {
@@ -248,6 +252,18 @@ public class Main extends Application {
                         // TODO: actual loading
                         try {
                             PlayerModel loadedPlayer = loadGameDB.loadPlayer(saveID);
+
+                            // TODO: enemies (nem)
+
+                            System.out.println(loadedPlayer.getPlayerName());
+                            System.out.println(loadedPlayer.getX());
+                            System.out.println(loadedPlayer.getY());
+                            System.out.println(loadedPlayer.getHp());
+                            System.out.println(loadedPlayer.getMaximumHealth());
+
+                            for (InventoryItemModel item : loadedPlayer.getInventory())
+                                System.out.println(item.getTileName());
+
                         } catch (SQLException throwables) {
                             throwables.printStackTrace();
                         }

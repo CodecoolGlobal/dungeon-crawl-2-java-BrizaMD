@@ -2,6 +2,8 @@ package com.codecool.dungeoncrawl.dao;
 
 import com.codecool.dungeoncrawl.logic.Cell;
 import com.codecool.dungeoncrawl.logic.actors.Player;
+import com.codecool.dungeoncrawl.logic.items.Inventory;
+import com.codecool.dungeoncrawl.model.InventoryItemModel;
 import com.codecool.dungeoncrawl.model.PlayerModel;
 import com.codecool.dungeoncrawl.model.SaveGame;
 
@@ -55,21 +57,25 @@ public class PlayerDaoJdbc implements PlayerDao {
             statement.setInt(1, saveId);
 
             ResultSet resultSet = statement.executeQuery();
-            resultSet.next();
-            //TODO how to return? Player needs a Cell, Cell needs a lot more info? Leave null deal with later?
-//            PlayerModel loadedPlayer = new Player(null);
-//
-//            int hp = resultSet.getInt("hp");
-//            int maxHp = resultSet.getInt("maximum_hp");
-//            int armor = resultSet.getInt("armor");
-//            int x = resultSet.getInt("x");
-//            int y = resultSet.getInt("y");
-//            int selectedItem = resultSet.getInt("selected_item");
-//            boolean hasRedKey = resultSet.getBoolean("has_red_key");
-//            boolean hasBlueKey = resultSet.getBoolean("has_blue_key");
-//
-//
-//            return loadedPlayer;
+
+            while(resultSet.next()) {
+                int hp = resultSet.getInt("hp");
+                int maxHp = resultSet.getInt("maximum_hp");
+                int armor = resultSet.getInt("armor");
+                int x = resultSet.getInt("x");
+                int y = resultSet.getInt("y");
+                int selectedItem = resultSet.getInt("selected_item");
+                boolean hasRedKey = resultSet.getBoolean("has_red_key");
+                boolean hasBlueKey = resultSet.getBoolean("has_blue_key");
+                String playerName = resultSet.getString("player_name");
+
+                List<InventoryItemModel> inventory = new InventoryDaoJdbc(dataSource).getItems(saveId);
+
+                PlayerModel loadedPlayer = new PlayerModel(playerName, x, y, hp, maxHp, armor, hasBlueKey, hasRedKey, selectedItem, inventory);
+
+                return loadedPlayer;
+            }
+
             return null;
 
         } catch (SQLException e) {

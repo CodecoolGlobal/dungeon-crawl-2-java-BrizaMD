@@ -11,13 +11,13 @@ import org.postgresql.ds.PGSimpleDataSource;
 import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 public class GameDatabaseManager {
     private PlayerDao playerDao;
     private GameStateDaoJdbc gameStateDao;
     private MonsterDaoJdbc monsterDao;
     private InventoryDaoJdbc inventoryDao;
-    private PickedItemsDaoJdbc pickedItemsDao;
 
     public void setup() throws SQLException {
         DataSource dataSource = connect();
@@ -25,7 +25,6 @@ public class GameDatabaseManager {
         gameStateDao = new GameStateDaoJdbc(dataSource);
         monsterDao = new MonsterDaoJdbc(dataSource);
         inventoryDao = new InventoryDaoJdbc(dataSource);
-        pickedItemsDao = new PickedItemsDaoJdbc(dataSource);
     }
 
     public void saveGame(Player player, GameState gameState, List<FreeActor> enemies) throws SQLException {
@@ -36,11 +35,8 @@ public class GameDatabaseManager {
         for (FreeActor enemy: enemies) {
             monsterDao.add(enemy, saveId);
         }
-        for (Item item: player.getFullInventory()){
-            if (item.isEquippable()){
-                inventoryDao.add(item, saveId);
-            }
-            pickedItemsDao.add(item, saveId);
+        for (Item item: player.getAllItems()){
+            inventoryDao.add(item, saveId);
         }
     }
 
@@ -55,9 +51,10 @@ public class GameDatabaseManager {
 
     private DataSource connect() throws SQLException {
         PGSimpleDataSource dataSource = new PGSimpleDataSource();
-        String dbName = "dungeon_crawler_saves";
-        String user = "tuli";
-        String password = "agyammintazekegybeepitettfek";
+
+        String dbName = System.getenv().get("SQL_DATABASE");
+        String user = System.getenv().get("SQL_USER");
+        String password = System.getenv().get("SQL_PASSWORD");
 
         dataSource.setDatabaseName(dbName);
         dataSource.setUser(user);
