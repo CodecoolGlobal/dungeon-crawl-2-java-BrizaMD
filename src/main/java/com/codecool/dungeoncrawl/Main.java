@@ -22,10 +22,9 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import javafx.scene.control.Button;
 import javafx.util.Duration;
@@ -147,9 +146,19 @@ public class Main extends Application {
 
         //TODO much more to be done here for the main menu
         Stage mainMenu = new Stage();
-        HBox menuBox = new HBox();
+        AnchorPane menuBox = new AnchorPane();
         Button newGame = new Button("New Game");
         newGame.setPrefSize(200, 100);
+        newGame.setLayoutX(540);
+        newGame.setLayoutY(200);
+        Button loadGame = new Button("Load Game");
+        loadGame.setPrefSize(200, 100);
+        loadGame.setLayoutX(540);
+        loadGame.setLayoutY(320);
+        Button exitGame = new Button("Exit Game");
+        exitGame.setPrefSize(200, 100);
+        exitGame.setLayoutX(540);
+        exitGame.setLayoutY(440);
         /** New Game should take us to a textbox where we can put in the player's name
          * There should be a Load Game, which gives us a list of available savegames to load
          * A query should get these saves of course and on clicking an OK button
@@ -221,8 +230,15 @@ public class Main extends Application {
             timeline.play();
         });
         menuBox.getChildren().add(newGame);
+        menuBox.getChildren().add(loadGame);
+        menuBox.getChildren().add(exitGame);
+        menuBox.setLayoutX(0);
+        menuBox.setLayoutY(0);
+        menuBox.getStyleClass().add("menu");
+        menuBox.getStylesheets().add("style.css");
+
         mainMenu.setTitle("Main Menu");
-        mainMenu.setScene(new Scene(menuBox, 800, 800));
+        mainMenu.setScene(new Scene(menuBox, 1280, 720));
         mainMenu.show();
 
 
