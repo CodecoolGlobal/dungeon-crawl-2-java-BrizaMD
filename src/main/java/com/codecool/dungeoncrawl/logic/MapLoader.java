@@ -242,7 +242,7 @@ public class MapLoader {
 
     public static GameMap loadMap(String mapName, PlayerModel loadedPlayer, List<MonsterModel> savedEnemies) {
         List<InventoryItemModel> inventory = loadedPlayer.getInventory();
-        InputStream is = MapLoader.class.getResourceAsStream("/" + mapName + ".txt");
+        InputStream is = MapLoader.class.getResourceAsStream(mapName);
         Scanner scanner = new Scanner(is);
         int width = scanner.nextInt();
         int height = scanner.nextInt();
@@ -280,30 +280,36 @@ public class MapLoader {
                             break;
                         case 'a':
                             cell.setType(CellType.FLOOR);
+                            boolean put = false;
                             for (InventoryItemModel item : inventory) {
                                 if (item.getX() == x && item.getY() == y) {
-                                    new Sword(cell);
+                                    put = true;
                                     break;
                                 }
                             }
+                            if (put) new Sword(cell);
                             break;
                         case 'G':
                             cell.setType(CellType.FLOOR);
                             for (InventoryItemModel item : inventory) {
-                                if (item.getX() == x && item.getY() == y) {
-                                    new Shield(cell);
+                                if (!(item.getX() == x && item.getY() == y)) {
+                                    System.out.println("helóbeló");
                                     break;
                                 }
+
                             }
+                            new Shield(cell);
                             break;
                         case 'b':
                             cell.setType(CellType.FLOOR);
+                            put = false;
                             for (InventoryItemModel item : inventory) {
                                 if (item.getX() == x && item.getY() == y) {
-                                    new Key(cell, "gold");
+                                    put = true;
                                     break;
                                 }
                             }
+                             if (put) new Key(cell, "gold");
                             break;
                         case 'q':
                             cell.setType(CellType.BONES);
@@ -382,12 +388,14 @@ public class MapLoader {
                             break;
                         case 'k':
                             cell.setType(CellType.FLOOR);
+                            put = false;
                             for (InventoryItemModel item : inventory) {
                                 if (item.getX() == x && item.getY() == y) {
-                                    new Chest(cell);
+                                    put = true;
                                     break;
                                 }
                             }
+                            if (put) new Chest(cell);
                             break;
                         case 'x':
                             cell.setType(CellType.DIRT);
@@ -427,12 +435,14 @@ public class MapLoader {
                             } else cell.setType(CellType.FLOOR); break;
                         case 'R':
                             cell.setType(CellType.FLOOR);
+                            put = false;
                             for (InventoryItemModel item : inventory) {
                                 if (item.getX() == x && item.getY() == y) {
-                                    new Key(cell, "red");
+                                    put = true;
                                     break;
                                 }
                             }
+                            if (put) new Key(cell, "red");
                             break;
                         case 'T':
                             if (loadedPlayer.hasBlueKey()) {
@@ -445,30 +455,36 @@ public class MapLoader {
                             break;
                         case 'Z':
                             cell.setType(CellType.FLOOR);
+                            put = false;
                             for (InventoryItemModel item : inventory) {
                                 if (item.getX() == x && item.getY() == y) {
-                                    new Key(cell, "blue");
+                                    put = true;
                                     break;
                                 }
                             }
+                            if (put) new Key(cell, "blue");
                             break;
                         case 'U':
                             cell.setType(CellType.FLOOR);
+                            put = false;
                             for (InventoryItemModel item : inventory) {
                                 if (item.getX() == x && item.getY() == y) {
-                                    new HealCrystal(cell);
+                                    put = true;
                                     break;
                                 }
                             }
+                            if (put) new HealCrystal(cell);
                             break;
                         case 'O':
                             cell.setType(CellType.FLOOR);
+                            put =false;
                             for (InventoryItemModel item : inventory) {
                                 if (item.getX() == x && item.getY() == y) {
-                                    new Food(cell);
+                                    put = true;
                                     break;
                                 }
                             }
+                             if (put) new Food(cell);
                             break;
                         case 'P':
                             cell.setType(CellType.TOILET);
@@ -533,12 +549,14 @@ public class MapLoader {
                             break;
                         case 'B':
                             cell.setType(CellType.FLOOR);
+                            put = false;
                             for (InventoryItemModel item : inventory) {
                                 if (item.getX() == x && item.getY() == y) {
-                                    new Torch(cell);
+                                    put = true;
                                     break;
                                 }
                             }
+                            if (put) new Torch(cell);
                             break;
                         case 'E':
                             cell.setType(CellType.HOUSE1);

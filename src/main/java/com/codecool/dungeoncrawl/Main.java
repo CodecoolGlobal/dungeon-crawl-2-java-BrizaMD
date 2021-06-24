@@ -280,8 +280,8 @@ public class Main extends Application {
     }
 
     private void loadGame(PlayerModel loadedPlayer, List<MonsterModel> savedEnemies, Stage primaryStage, String mapName) {
-        map = MapLoader.loadMap(mapName.substring(1, mapName.length()-4), loadedPlayer, savedEnemies);
-        enemies = new ArrayList<>();//TODO this should get filled out once we load our saved enemies and refresh
+        map = MapLoader.loadMap(mapName, loadedPlayer, savedEnemies);
+        enemies = new ArrayList<>();
         canvas = new Canvas(VIEWPORT_WIDTH, VIEWPORT_HEIGHT);
         context = canvas.getGraphicsContext2D();
 
